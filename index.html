@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controle de Vendas</title>
+  <link rel="manifest" href="./manifest.json" />
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js")
+        .then(() => console.log("✅ Service Worker registrado"))
+        .catch(err => console.error("Erro ao registrar Service Worker:", err));
+    }
+  </script>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #073763;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #mensagem {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Controle de Vendas</h1>
+  <form id="cadastroForm">
+    <div class="form-group">
+      <label for="nomeCliente">Nome do Cliente:</label>
+      <input type="text" id="nomeCliente" name="nomeCliente" required>
+    </div>
+    <div class="form-group">
+      <label for="codigoProduto">Código do Produto:</label>
+      <input type="text" id="codigoProduto" name="codigoProduto" required>
+    </div>
+    <div class="form-group">
+      <label for="quantidade">Quantidade:</label>
+      <input type="number" id="quantidade" name="quantidade" min="1" value="1" required>
+    </div>
+    <div class="form-group">
+      <label for="precoProduto">Preço do Produto:</label>
+      <input type="number" id="precoProduto" name="precoProduto" step="0.01" required>
+    </div>
+    <div class="form-group">
+      <label for="dataVenda">Data da Venda:</label>
+      <input type="date" id="dataVenda" name="dataVenda" required>
+    </div>
+    <div class="form-group">
+      <label for="situacaoPagamento">Situação do Pagamento:</label>
+      <select id="situacaoPagamento" name="situacaoPagamento">
+        <option value="PAGO">PAGO</option>
+        <option value="NÃO PAGO">NÃO PAGO</option>
+        <option value="EM CRÉDITO">EM CRÉDITO</option>
+      </select>
+    </div>
+    <button type="button" onclick="enviarDados()">REGISTRAR VENDA</button>
+  </form>
+  <div id="mensagem"></div>
+
+  <script>
+    const scriptUrl = "https://script.google.com/macros/s/SEU_SCRIPT_URL_AQUI/exec";
+
+    function enviarDados() {
+      const msg = document.getElementById("mensagem");
+
+      const formData = {
+        action: "registro",
+        nomeCliente: document.getElementById("nomeCliente").value,
+        codigoProduto: document.getElementById("codigoProduto").value,
+        quantidade: document.getElementById("quantidade").value,
+        precoProduto: document.getElementById("precoProduto").value,
+        dataVenda: document.getElementById("dataVenda").value,
+        situacaoPagamento: document.getElementById("situacaoPagamento").value
+      };
+
+      const params = new URLSearchParams(formData);
+
+      msg.innerText = "Enviando dados...";
+      msg.style.color = "#073763";
+
+      fetch(`${scriptUrl}?${params.toString()}`)
+        .then(res => res.text())
+        .then(resposta => {
+          msg.innerText = resposta;
+          msg.style.color = "#073763";
+          document.getElementById("cadastroForm").reset();
+          setTimeout(() => {
+            msg.innerText = "";
+          }, 3000);
+        })
+        .catch(err => {
+          msg.innerText = "Erro ao enviar dados.";
+          msg.style.color = "#ff0000";
+          console.error(err);
+        });
+    }
+  </script>
+</body>
+</html>
