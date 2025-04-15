@@ -12,83 +12,166 @@
         .catch(err => console.error("Erro ao registrar Service Worker:", err));
     }
   </script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
-    body {
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
       font-family: sans-serif;
     }
+
+    body {
+      background-color: #073763;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      color: #fff;
+      font-size: 28px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .form-container {
+      background: white;
+      padding: 25px 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.25);
+      width: 100%;
+      max-width: 400px;
+    }
+
     .form-group {
       margin-bottom: 15px;
     }
+
     label {
       display: block;
       margin-bottom: 5px;
       font-weight: bold;
+      color: #073763;
     }
+
     input[type="text"],
     input[type="number"],
     input[type="date"],
     select {
       width: 100%;
-      padding: 8px;
+      padding: 10px;
       border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
+      border-radius: 5px;
+      font-size: 16px;
+      background-color: transparent;
+      color: #000;
     }
+
+    select {
+      background-color: transparent;
+    }
+
     button {
+      width: 100%;
       background-color: #073763;
       color: white;
-      padding: 10px 15px;
+      padding: 12px;
       border: none;
-      border-radius: 4px;
-      cursor: pointer;
+      border-radius: 5px;
       font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
     }
+
     button:hover {
-      background-color: #45a049;
+      background-color: #04518f;
     }
+
     #mensagem {
       margin-top: 15px;
       font-weight: bold;
+      text-align: center;
+      color: #073763;
+    }
+
+    #video-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    #reader {
+      width: 100%;
+      max-width: 400px;
+      min-height: 200px;
+      border: 1px solid #ccc;
+    }
+
+    #close-camera-btn {
+      background-color: #f44336;
+      color: white;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
   <h1>Controle de Vendas</h1>
-  <form id="cadastroForm">
-    <div class="form-group">
-      <label for="nomeCliente">Nome do Cliente:</label>
-      <input type="text" id="nomeCliente" name="nomeCliente" required>
-    </div>
-    <div class="form-group">
-      <label for="codigoProduto">Código do Produto:</label>
-      <input type="text" id="codigoProduto" name="codigoProduto" required>
-    </div>
-    <div class="form-group">
-      <label for="quantidade">Quantidade:</label>
-      <input type="number" id="quantidade" name="quantidade" min="1" value="1" required>
-    </div>
-    <div class="form-group">
-      <label for="precoProduto">Preço do Produto:</label>
-      <input type="number" id="precoProduto" name="precoProduto" step="0.01" required>
-    </div>
-    <div class="form-group">
-      <label for="dataVenda">Data da Venda:</label>
-      <input type="date" id="dataVenda" name="dataVenda" required>
-    </div>
-    <div class="form-group">
-      <label for="situacaoPagamento">Situação do Pagamento:</label>
-      <select id="situacaoPagamento" name="situacaoPagamento">
-        <option value="PAGO">PAGO</option>
-        <option value="NÃO PAGO">NÃO PAGO</option>
-        <option value="EM CRÉDITO">EM CRÉDITO</option>
-      </select>
-    </div>
-    <button type="button" onclick="enviarDados()">REGISTRAR VENDA</button>
-  </form>
-  <div id="mensagem"></div>
+
+  <div class="form-container">
+    <form id="cadastroForm">
+      <div class="form-group">
+        <label for="nomeCliente">Nome do Cliente:</label>
+        <input type="text" id="nomeCliente" name="nomeCliente" required>
+      </div>
+
+      <div class="form-group">
+        <label for="codigoProduto">Código do Produto:</label>
+        <input type="number" id="codigoProduto" name="codigoProduto" required>
+        <button type="button" onclick="iniciarLeitura()">Ler Código de Barras</button>
+      </div>
+
+      <div id="video-container">
+        <div id="reader"></div>
+        <button type="button" id="close-camera-btn" onclick="fecharCamera()">Fechar Câmera</button>
+      </div>
+
+      <div class="form-group">
+        <label for="quantidade">Quantidade:</label>
+        <input type="number" id="quantidade" name="quantidade" min="1" value="1" required>
+      </div>
+
+      <div class="form-group">
+        <label for="precoProduto">Preço do Produto:</label>
+        <input type="number" id="precoProduto" name="precoProduto" step="0.01" required>
+      </div>
+
+      <div class="form-group">
+        <label for="dataVenda">Data da Venda:</label>
+        <input type="date" id="dataVenda" name="dataVenda" required>
+      </div>
+
+      <div class="form-group">
+        <label for="situacaoPagamento">Situação do Pagamento:</label>
+        <select id="situacaoPagamento" name="situacaoPagamento">
+          <option value="PAGO">PAGO</option>
+          <option value="NÃO PAGO">NÃO PAGO</option>
+          <option value="EM CRÉDITO">EM CRÉDITO</option>
+        </select>
+      </div>
+
+      <button type="button" onclick="enviarDados()">REGISTRAR VENDA</button>
+    </form>
+    <div id="mensagem"></div>
+  </div>
 
   <script>
     const scriptUrl = "https://script.google.com/macros/s/AKfycbw5Zrxj4z7hG5x81MTMC-cjInJQmvGaqfU19w_Y6f02sfmI7AH91zC6u-CjOoIRsDp4xQ/exec";
+    let html5QrCode = null;
 
     function enviarDados() {
       const msg = document.getElementById("mensagem");
@@ -112,7 +195,6 @@
         .then(res => res.text())
         .then(resposta => {
           msg.innerText = resposta;
-          msg.style.color = "#073763";
           document.getElementById("cadastroForm").reset();
           setTimeout(() => {
             msg.innerText = "";
@@ -120,9 +202,43 @@
         })
         .catch(err => {
           msg.innerText = "Erro ao enviar dados.";
-          msg.style.color = "#ff0000";
+          msg.style.color = "#f00";
           console.error(err);
         });
+    }
+
+    function iniciarLeitura() {
+      document.getElementById("video-container").style.display = "flex";
+      html5QrCode = new Html5Qrcode("reader");
+
+      const config = {
+        fps: 10,
+        qrbox: 250,
+        formatsToSupport: [
+          Html5QrcodeSupportedFormats.EAN_13,
+          Html5QrcodeSupportedFormats.CODE_128,
+          Html5QrcodeSupportedFormats.EAN_8
+        ]
+      };
+
+      html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
+        .catch(err => {
+          console.error("Erro ao iniciar câmera:", err);
+          document.getElementById("mensagem").textContent = "Erro ao acessar a câmera.";
+          document.getElementById("mensagem").style.color = "#f00";
+        });
+    }
+
+    function onScanSuccess(decodedText) {
+      document.getElementById("codigoProduto").value = decodedText;
+      fecharCamera();
+    }
+
+    function fecharCamera() {
+      if (html5QrCode) {
+        html5QrCode.stop().then(() => html5QrCode.clear());
+      }
+      document.getElementById("video-container").style.display = "none";
     }
   </script>
 </body>
