@@ -156,6 +156,11 @@
       </div>
 
       <div class="form-group">
+        <label for="prazoPagamento">Prazo do Pagamento:</label>
+        <input type="date" id="prazoPagamento" name="prazoPagamento" required>
+      </div>
+
+      <div class="form-group">
         <label for="situacaoPagamento">Situação do Pagamento:</label>
         <select id="situacaoPagamento" name="situacaoPagamento">
           <option value="PAGO">PAGO</option>
@@ -170,7 +175,7 @@
   </div>
 
   <script>
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbw5Zrxj4z7hG5x81MTMC-cjInJQmvGaqfU19w_Y6f02sfmI7AH91zC6u-CjOoIRsDp4xQ/exec";
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbxd0zql33kp75tvlYWjUvLBnB1MOkRWf6xhEUFdJZamuIBnzAaSaV9qbA_SgGGRmBPhEA/exec";
     let html5QrCode = null;
 
     function enviarDados() {
@@ -183,6 +188,7 @@
         quantidade: document.getElementById("quantidade").value,
         precoProduto: document.getElementById("precoProduto").value,
         dataVenda: document.getElementById("dataVenda").value,
+        dataVenda: document.getElementById("prazoPagamento").value,
         situacaoPagamento: document.getElementById("situacaoPagamento").value
       };
 
