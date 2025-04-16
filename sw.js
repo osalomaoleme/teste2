@@ -1,8 +1,9 @@
-const CACHE_NAME = "controle-vendas-v1";
+const CACHE_NAME = "controle-vendas-v1.1";
 const FILES_TO_CACHE = [
   "./",
   "./index.html",
-  "./manifest.json"
+  "./manifest.json",
+  "./logo.png"
 ];
 
 // Instala o Service Worker e faz cache dos arquivos
