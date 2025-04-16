@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CONTROLE DE VENDAS</title>
-  <link rel="manifest" href="./manifest.json" />
+  <link rel="manifest" href="./manifest.json?v=1.1" />
   <script>
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./sw.js")
-        .then(() => console.log("✅ Service Worker registrado"))
+      navigator.serviceWorker.register("./sw.js?v=1.1")
+        .then(() => console.log("✅ Service Worker registrado (v1.1)"))
         .catch(err => console.error("Erro ao registrar Service Worker:", err));
     }
   </script>
@@ -33,7 +33,7 @@
 
     img.logo {
       width: 300px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
 
     h1 {
@@ -125,7 +125,7 @@
   </style>
 </head>
 <body>
-  <img src="./logo.png" alt="Logo Gostinho de Minas" class="logo" />
+  <img src="./logo.png?v=1.1" alt="Logo Gostinho de Minas" class="logo" />
   <h1>CONTROLE DE VENDAS</h1>
 
   <div class="form-container">
